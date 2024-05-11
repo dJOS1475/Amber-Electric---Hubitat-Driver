@@ -180,3 +180,7 @@ Date parseDate(String dateString) {
 void debug(String msg) {
     if (debugEnable) log.debug "${device.displayName} - ${msg}"
 }
+
+void trace(String msg) {
+	if(debugEnable) log.trace device.displayName+' - '+msg
+}
