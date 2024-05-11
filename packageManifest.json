@@ -8,7 +8,7 @@
   "communityLink": "",
   "drivers": [
     {
-      "id": "",
+      "id": "adde3e52-50ed-4c85-ab5a-786892b8fb71",
       "name": "Amber Electric Integration for Hubitat",
       "namespace": "dJOS",
       "location": "https://raw.githubusercontent.com/dJOS1475/Amber-Electric---Hubitat-Driver/main/Amber_Driver.groovy",
