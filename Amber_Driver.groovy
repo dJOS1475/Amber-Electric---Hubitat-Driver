@@ -10,12 +10,13 @@
  *
  *	v1.0.0 - Original Release
  *	v1.1.0 - Fix Scheduling Bug
+ *	v1.2.0 - Added Rounding of pricing data to 2 decimal places
  */
 
 import groovy.json.JsonSlurper
 
 static String version() {
-    return "1.1.0"
+    return "1.2.0"
 }
 
 static String siteApi() {
@@ -156,9 +157,12 @@ void processResponse(data) {
 void processCurrentIntervalResponse(data) {
     if (data instanceof List && !data.isEmpty()) {
         def currentIntervalData = data[0]
-        sendEvent(name: "currentIntervalPerKwh", value: currentIntervalData.perKwh)
-        sendEvent(name: "currentIntervalRenewables", value: currentIntervalData.renewables)
-        sendEvent(name: "currentIntervalSpotPerKwh", value: currentIntervalData.spotPerKwh)
+        BigDecimal roundedPerKwh = currentIntervalData.perKwh?.setScale(2, BigDecimal.ROUND_HALF_UP)
+        BigDecimal roundedRenewables = currentIntervalData.renewables?.setScale(2, BigDecimal.ROUND_HALF_UP)
+        BigDecimal roundedSpotPerKwh = currentIntervalData.spotPerKwh?.setScale(2, BigDecimal.ROUND_HALF_UP)
+        sendEvent(name: "currentIntervalPerKwh", value: roundedPerKwh)
+        sendEvent(name: "currentIntervalRenewables", value: roundedRenewables)
+        sendEvent(name: "currentIntervalSpotPerKwh", value: roundedSpotPerKwh)
         sendEvent(name: "currentIntervalChannelType", value: currentIntervalData.channelType)
         sendEvent(name: "currentIntervalSpikeStatus", value: currentIntervalData.spikeStatus)
         sendEvent(name: "currentIntervalDescriptor", value: currentIntervalData.descriptor)
