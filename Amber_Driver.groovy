@@ -59,6 +59,35 @@ void refresh() {
     pullData()
 }
 
+void updated() {
+	if (!state.updatedLastRanAt || now() >= state.updatedLastRanAt + 2000) {
+		state.updatedLastRanAt = now()
+		trace "updated() called with settings: ${settings.inspect()}".toString()
+        
+		pullData()
+		startPoll()
+		if(debugEnable) runIn(1800,logsOff)
+	} else {
+		trace "updated() ran within the last 2 seconds - skipping"
+	}
+}
+
+void logsOff() {
+	debug "debug logging disabled..."
+	device.updateSetting("debugEnable",[value:"false",type:"bool"])
+}
+
+void startPoll() {
+	unschedule()
+	// Schedule polling based on preference setting
+	def sec = Math.round(Math.floor(Math.random() * 60))
+	def min = Math.round(Math.floor(Math.random() * settings.pollingInterval.toInteger()))
+	String cron = "${sec} ${min}/${settings.pollingInterval.toInteger()} * * * ?" // every N min
+	trace "startPoll: schedule('$cron', pullData)".toString()
+	schedule(cron, pullData)
+}
+
+
 void pullData() {
     log.info "Requesting data from Amber API"
 
@@ -150,14 +179,4 @@ Date parseDate(String dateString) {
 
 void debug(String msg) {
     if (debugEnable) log.debug "${device.displayName} - ${msg}"
-}
-
-void startPoll() {
-	unschedule()
-	// Schedule polling based on preference setting
-	def sec = Math.round(Math.floor(Math.random() * 60))
-	def min = Math.round(Math.floor(Math.random() * settings.pollingInterval.toInteger()))
-	String cron = "${sec} ${min}/${settings.pollingInterval.toInteger()} * * * ?" // every N min
-	trace "startPoll: schedule('$cron', pullData)".toString()
-	schedule(cron, pullData)
 }
