@@ -3,5 +3,14 @@
   "author": "Derek Osborn",
   "version": "1.1",
   "minimumHEVersion": "2.0.0",
-  "dateReleased": "2024-05-11"
+  "dateReleased": "2024-05-11",
+  "drivers": [
+    {
+      "id": "7bd6f3cb-5af8-4d09-b19c-4075613c6023",
+      "name": "Amber Electric Integration for Hubitat",
+      "namespace": "dJOS",
+      "location": "https://raw.githubusercontent.com/dJOS1475/Amber-Electric---Hubitat-Driver/main/Amber_Driver.groovy",
+      "required": true
+    }
+  ]
 }
