@@ -1,5 +1,5 @@
 /**
- *	Amber Electric Integration
+ *	Amber Electric Integration for Hubitat
  *  Author: Derek Osborn (dJOS)
  *
  *	Licensed under the GNU General Public License v2.0
@@ -9,13 +9,14 @@
  *	on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License
  *	for the specific language governing permissions and limitations under the License.
  *
- * 	V1.0.0 - Original Version
+ * 	v1.0.0 - Original Release
+ * 	v1.1.0 - Fix Scheduling Bug
  */
 
 import groovy.json.JsonSlurper
 
 static String version() {
-    return "1.0.0"
+    return "1.1.0"
 }
 
 static String siteApi() {
@@ -32,7 +33,7 @@ preferences {
 }
 
 metadata {
-    definition(name: "Amber Electric Integration", namespace: "dJOS", author: "dJOS",importUrl: "https://raw.githubusercontent.com/dJOS1475/Amber-Electric---Hubitat-Driver/main/Amber_Driver.groovy") {
+    definition(name: "Amber Electric Integration for Hubitat", namespace: "dJOS", author: "dJOS",importUrl: "https://raw.githubusercontent.com/dJOS1475/Amber-Electric---Hubitat-Driver/main/Amber_Driver.groovy") {
         capability "Refresh"
         capability "Polling"
         attribute "siteId", "string"
@@ -150,4 +151,14 @@ Date parseDate(String dateString) {
 
 void debug(String msg) {
     if (debugEnable) log.debug "${device.displayName} - ${msg}"
+}
+
+void startPoll() {
+	unschedule()
+	// Schedule polling based on preference setting
+	def sec = Math.round(Math.floor(Math.random() * 60))
+	def min = Math.round(Math.floor(Math.random() * settings.pollingInterval.toInteger()))
+	String cron = "${sec} ${min}/${settings.pollingInterval.toInteger()} * * * ?" // every N min
+	trace "startPoll: schedule('$cron', pullData)".toString()
+	schedule(cron, pullData)
 }
