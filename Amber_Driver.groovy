@@ -32,7 +32,7 @@ preferences {
 }
 
 metadata {
-    definition(name: "Amber Electric Integration", namespace: "dJOS", author: "dJOS") {
+    definition(name: "Amber Electric Integration", namespace: "dJOS", author: "dJOS",importUrl: "https://raw.githubusercontent.com/dJOS1475/Amber-Electric---Hubitat-Driver/main/Amber_Driver.groovy") {
         capability "Refresh"
         capability "Polling"
         attribute "siteId", "string"
