@@ -1,6 +1,6 @@
 /**
  *	Amber Electric Integration for Hubitat
- *  Author: Derek Osborn (dJOS)
+ *	Author: Derek Osborn (dJOS)
  *
  *	Licensed under the GNU General Public License v2.0
  *
@@ -8,8 +8,8 @@
  *	on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License
  *	for the specific language governing permissions and limitations under the License.
  *
- * 	v1.0.0 - Original Release
- * 	v1.1.0 - Fix Scheduling Bug
+ *	v1.0.0 - Original Release
+ *	v1.1.0 - Fix Scheduling Bug
  */
 
 import groovy.json.JsonSlurper
