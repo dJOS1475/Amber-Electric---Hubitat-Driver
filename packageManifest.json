@@ -3,7 +3,8 @@
   "author": "Derek Osborn",
   "version": "1.3.0",
   "minimumHEVersion": "2.0.0",
-  "dateReleased": "2024-05-11",
+  "dateReleased": "2024-05-12",
+  "releaseNotes": "v1.3.0 - Added a HTML Dashboard tile with Import / Export Prices",
   "communityLink": "https://community.hubitat.com/t/release-amber-electric-integration-for-hubitat-designed-for-the-new-api/137698?u=djos",
   "drivers": [
     {
