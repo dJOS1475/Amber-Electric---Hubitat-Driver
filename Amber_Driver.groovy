@@ -57,7 +57,6 @@ metadata {
 
 void poll() {
     pullData()
-    currentPrices()
 }
 
 void refresh() {
@@ -114,6 +113,7 @@ void pullData() {
 
                 // Process response data
                 processResponse(responseData)
+		currentPrices()
             } else {
                 debug "Error: HTTP status ${response.status}"
             }
