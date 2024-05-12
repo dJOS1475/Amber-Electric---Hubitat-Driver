@@ -19,7 +19,7 @@ import groovy.json.JsonSlurper
 import groovy.transform.Field
 
 static String version() {
-    return "1.3.1"
+    return "1.3.0"
 }
 
 static String siteApi() {
@@ -58,12 +58,10 @@ metadata {
 
 void poll() {
     pullData()
-    currentPrices()
 }
 
 void refresh() {
     pullData()
-    currentPrices()
 }
 
 void updated() {
@@ -73,7 +71,6 @@ void updated() {
         
 		pullData()
 		startPoll()
-        currentPrices()
         if(debugEnable) runIn(1800,logsOff)
 	} else {
 		trace "updated() ran within the last 2 seconds - skipping"
@@ -91,8 +88,8 @@ void startPoll() {
 	def sec = Math.round(Math.floor(Math.random() * 60))
 	def min = Math.round(Math.floor(Math.random() * settings.pollingInterval.toInteger()))
 	String cron = "${sec} ${min}/${settings.pollingInterval.toInteger()} * * * ?" // every N min
-	trace "startPoll: schedule('$cron', poll)".toString()
-	schedule(cron, poll)
+	trace "startPoll: schedule('$cron', pullData)".toString()
+	schedule(cron, pullData)
 }
 
 
@@ -124,6 +121,8 @@ void pullData() {
     } catch (Exception e) {
         log.warn "Error occurred: ${e.message}"
     }
+    pauseExecution(1000)
+    currentPrices() // Update htmlPrices dashboard tile
 }
 
 void processResponse(data) {
@@ -179,6 +178,17 @@ void processCurrentIntervalResponse(data) {
     }
 }
 
+def currentPrices() {
+	if(txtEnable == true){log.debug "updateTile1 called"}		// log the data returned by AE//	
+	htmlPrices ="<div style='line-height:1.0; font-size:0.75em;'><br>Import Price:<br></div>"
+    htmlPrices +="<div style='line-height:1.0; font-size:0.75em;'><br>${device.currentValue('currentIntervalPerKwh')}c per KwH<br></div>"
+	htmlPrices +="<div style='line-height:50%;'><br></div>"
+    htmlPrices +="<div style='line-height:1.0; font-size:0.75em;'><br>Export Price: <br></div>"
+    htmlPrices +="<div style='line-height:1.0; font-size:0.75em;'><br>${device.currentValue('currentIntervalSpotPerKwh')}c per KwH<br></div>"
+	sendEvent(name: "htmlPrices", value: htmlPrices)
+	if(txtEnable == true){log.debug "htmlPrices contains ${htmlPrices}"}		// log the data returned by AE//	
+	if(txtEnable == true){log.debug "${htmlPrices.length()}"}		// log the data returned by AE//	
+	}
 
 Date parseDate(String dateString) {
     try {
@@ -197,15 +207,3 @@ void trace(String msg) {
 	if(debugEnable) log.trace device.displayName+' - '+msg
 }
 
-
-def currentPrices() {
-	if(txtEnable == true){log.debug "updateTile1 called"}		// log the data returned by AE//	
-	htmlPrices ="<div style='line-height:1.0; font-size:0.75em;'><br>Import Price:<br></div>"
-    htmlPrices +="<div style='line-height:1.0; font-size:0.75em;'><br>${device.currentValue('currentIntervalPerKwh')}c per KwH<br></div>"
-	htmlPrices +="<div style='line-height:50%;'><br></div>"
-    htmlPrices +="<div style='line-height:1.0; font-size:0.75em;'><br>Export Price: <br></div>"
-    htmlPrices +="<div style='line-height:1.0; font-size:0.75em;'><br>${device.currentValue('currentIntervalSpotPerKwh')}c per KwH<br></div>"
-	sendEvent(name: "htmlPrices", value: htmlPrices)
-	if(txtEnable == true){log.debug "htmlPrices contains ${htmlPrices}"}		// log the data returned by AE//	
-	if(txtEnable == true){log.debug "${htmlPrices.length()}"}		// log the data returned by AE//	
-	}
