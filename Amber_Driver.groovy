@@ -11,7 +11,7 @@
  *	v1.0.0 - Original Release
  *	v1.1.0 - Fix Scheduling Bug
  *	v1.2.0 - Added Rounding of pricing data to 2 decimal places
-  *	v1.3.0 - Added a HTML Dashboard tile with Import / Export Prices
+ *	v1.3.0 - Added a HTML Dashboard tile with Import / Export Prices
  */
 
 import groovy.json.JsonSlurper
