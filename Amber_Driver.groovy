@@ -12,13 +12,14 @@
  *	v1.1.0 - Fix Scheduling Bug
  *	v1.2.0 - Added Rounding of pricing data to 2 decimal places
  *	v1.3.0 - Added a HTML Dashboard tile with Import / Export Prices
+ *	v1.3.1 - Bug fix for HTML Tile and modified Poll Scheduling
  */
 
 import groovy.json.JsonSlurper
 import groovy.transform.Field
 
 static String version() {
-    return "1.3.0"
+    return "1.3.1"
 }
 
 static String siteApi() {
@@ -57,10 +58,12 @@ metadata {
 
 void poll() {
     pullData()
+    currentPrices()
 }
 
 void refresh() {
     pullData()
+    currentPrices()
 }
 
 void updated() {
@@ -70,6 +73,7 @@ void updated() {
         
 		pullData()
 		startPoll()
+        currentPrices()
         if(debugEnable) runIn(1800,logsOff)
 	} else {
 		trace "updated() ran within the last 2 seconds - skipping"
@@ -87,8 +91,8 @@ void startPoll() {
 	def sec = Math.round(Math.floor(Math.random() * 60))
 	def min = Math.round(Math.floor(Math.random() * settings.pollingInterval.toInteger()))
 	String cron = "${sec} ${min}/${settings.pollingInterval.toInteger()} * * * ?" // every N min
-	trace "startPoll: schedule('$cron', pullData)".toString()
-	schedule(cron, pullData)
+	trace "startPoll: schedule('$cron', poll)".toString()
+	schedule(cron, poll)
 }
 
 
@@ -113,7 +117,6 @@ void pullData() {
 
                 // Process response data
                 processResponse(responseData)
-		currentPrices()
             } else {
                 debug "Error: HTTP status ${response.status}"
             }
