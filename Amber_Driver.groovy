@@ -11,12 +11,14 @@
  *	v1.0.0 - Original Release
  *	v1.1.0 - Fix Scheduling Bug
  *	v1.2.0 - Added Rounding of pricing data to 2 decimal places
+  *	v1.3.0 - Added a HTML Dashboard tile with Import / Export Prices
  */
 
 import groovy.json.JsonSlurper
+import groovy.transform.Field
 
 static String version() {
-    return "1.2.0"
+    return "1.3.0"
 }
 
 static String siteApi() {
@@ -48,12 +50,14 @@ metadata {
         attribute "currentIntervalSpikeStatus", "string"
         attribute "currentIntervalDescriptor", "string"
         attribute "currentIntervalEstimate", "bool"
+        attribute "htmlPrices", "string"
         command "refresh"
     }
 }
 
 void poll() {
     pullData()
+    currentPrices()
 }
 
 void refresh() {
@@ -67,7 +71,7 @@ void updated() {
         
 		pullData()
 		startPoll()
-		if(debugEnable) runIn(1800,logsOff)
+        if(debugEnable) runIn(1800,logsOff)
 	} else {
 		trace "updated() ran within the last 2 seconds - skipping"
 	}
@@ -172,6 +176,7 @@ void processCurrentIntervalResponse(data) {
     }
 }
 
+
 Date parseDate(String dateString) {
     try {
         return Date.parse("yyyy-MM-dd", dateString)
@@ -188,3 +193,16 @@ void debug(String msg) {
 void trace(String msg) {
 	if(debugEnable) log.trace device.displayName+' - '+msg
 }
+
+
+def currentPrices() {
+	if(txtEnable == true){log.debug "updateTile1 called"}		// log the data returned by AE//	
+	htmlPrices ="<div style='line-height:1.0; font-size:0.75em;'><br>Import Price:<br></div>"
+    htmlPrices +="<div style='line-height:1.0; font-size:0.75em;'><br>${device.currentValue('currentIntervalPerKwh')}c per KwH<br></div>"
+	htmlPrices +="<div style='line-height:50%;'><br></div>"
+    htmlPrices +="<div style='line-height:1.0; font-size:0.75em;'><br>Export Price: <br></div>"
+    htmlPrices +="<div style='line-height:1.0; font-size:0.75em;'><br>${device.currentValue('currentIntervalSpotPerKwh')}c per KwH<br></div>"
+	sendEvent(name: "htmlPrices", value: htmlPrices)
+	if(txtEnable == true){log.debug "htmlPrices contains ${htmlPrices}"}		// log the data returned by AE//	
+	if(txtEnable == true){log.debug "${htmlPrices.length()}"}		// log the data returned by AE//	
+	}
