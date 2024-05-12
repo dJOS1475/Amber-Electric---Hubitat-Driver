@@ -4,6 +4,7 @@
   "version": "1.3.0",
   "minimumHEVersion": "2.0.0",
   "dateReleased": "2024-05-11",
+  "communityLink": "https://community.hubitat.com/t/release-amber-electric-integration-for-hubitat-designed-for-the-new-api/137698?u=djos",
   "drivers": [
     {
       "id": "7bd6f3cb-5af8-4d09-b19c-4075613c6023",
